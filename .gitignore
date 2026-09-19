@@ -1,0 +1,9 @@
+config.py
+*.csv
+*.CSV
+sample_statements/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.vscode/
