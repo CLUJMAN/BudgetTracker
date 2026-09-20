@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Budget Tracker{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="hero-label">Net worth</div>
+  <div class="hero-value {{ 'neg' if net_worth < 0 else '' }}">{{ net_worth | money }}</div>
+  <div class="hero-sub">across {{ accounts | length }} account{{ '' if accounts | length == 1 else 's' }}</div>
+</section>
+
+<section class="cards">
+  {% for a in accounts %}
+  <div class="card">
+    <div class="account-name">{{ a.name }}</div>
+    <div class="account-meta">{{ a.type }}{% if a.last_four %} ··{{ a.last_four }}{% endif %}</div>
+    <div class="account-balance {{ 'neg' if a.balance < 0 else '' }}">{{ a.balance | money }}</div>
+  </div>
+  {% else %}
+  <div class="empty">No accounts yet. Add one to the <code>accounts</code> table, then import a CSV.</div>
+  {% endfor %}
+</section>
+
+<section class="month">
+  <h2>{{ month_label }}</h2>
+  <div class="month-grid">
+    <div class="stat">
+      <span class="stat-label">Income</span>
+      <span class="stat-value pos">{{ month_income | money }}</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Spending</span>
+      <span class="stat-value neg">{{ month_expense | money }}</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Net</span>
+      <span class="stat-value {{ 'neg' if month_net < 0 else 'pos' }}">{{ month_net | money }}</span>
+    </div>
+  </div>
+</section>
+
+<div class="two-col">
+  <section class="panel">
+    <h2>Spending by category</h2>
+    {% for s in spending %}
+    <div class="bar-row">
+      <div class="bar-label">{{ s.name }}</div>
+      <div class="bar-track"><div class="bar-fill" style="width: {{ s.pct }}%"></div></div>
+      <div class="bar-value">{{ s.total | money }}</div>
+    </div>
+    {% else %}
+    <p class="muted">No spending recorded this month.</p>
+    {% endfor %}
+  </section>
+
+  <section class="panel">
+    <h2>Recent transactions</h2>
+    <table class="txn-table">
+      <thead>
+        <tr><th>Date</th><th>Description</th><th>Category</th><th class="right">Amount</th></tr>
+      </thead>
+      <tbody>
+        {% for t in recent %}
+        <tr>
+          <td class="nowrap">{{ t.txn_date }}</td>
+          <td>{{ t.description }}</td>
+          <td><span class="tag">{{ t.category_name }}</span></td>
+          <td class="right {{ 'neg' if t.amount < 0 else 'pos' }}">{{ t.amount | money }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="muted">No transactions yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+</div>
+
+{% endblock %}

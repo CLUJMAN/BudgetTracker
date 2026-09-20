@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Transactions · Budget Tracker{% endblock %}
+{% block content %}
+
+<section class="panel">
+  <h2>All transactions <span class="muted">({{ txns | length }})</span></h2>
+  <table class="txn-table">
+    <thead>
+      <tr>
+        <th>Date</th><th>Account</th><th>Description</th><th>Category</th><th class="right">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in txns %}
+      <tr>
+        <td class="nowrap">{{ t.txn_date }}</td>
+        <td>{{ t.account_name }}</td>
+        <td>{{ t.description }}</td>
+        <td><span class="tag">{{ t.category_name }}</span></td>
+        <td class="right {{ 'neg' if t.amount < 0 else 'pos' }}">{{ t.amount | money }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="muted">No transactions yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+{% endblock %}
